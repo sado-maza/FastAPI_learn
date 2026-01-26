@@ -24,7 +24,7 @@ class NewBook(BaseModel):
     year_published: str
 
 
-@app.post("/books", tags=["books"], summary="create new book")
+@app.post("/bookss", tags=["books"], summary="create new book")
 def add_book(new_book: NewBook):
     data.append({
         "id": data[-1]["id"]+1,

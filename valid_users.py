@@ -1,6 +1,6 @@
 import uvicorn
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI
 users_data = [
     {
         "name": "Mark",
