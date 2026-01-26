@@ -9,21 +9,12 @@ app = FastAPI()
 def get_books():
     return data
 
-
-
-
-
-
 @app.get("/books/{book_id}", tags=["books"], summary="get one book by id")
 def get_book(book_id: int):
     for book in data:
         if book["id"] == book_id:
             return book
     raise HTTPException(status_code=404, detail="book not found")
-
-
-
-
 
 
 class NewBook(BaseModel):
@@ -43,8 +34,6 @@ def add_book(new_book: NewBook):
         "year_published": new_book.year_published
     })
     return data[-1]
-
-
 
 
 if __name__ == "__main__":
