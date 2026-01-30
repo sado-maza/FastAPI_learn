@@ -29,15 +29,10 @@ class Books(Base):
     author: Mapped[str]
 
 
-
 @app.post('/setup_database')
 async def setup_database():
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-
-
-
-
 
 class BookSchema(BaseModel):
     title: str
@@ -52,7 +47,6 @@ async def add_books(data: BookSchema,session: SessionDep):
     )
     session.add(new_book)
     await session.commit()
-
 
 @app.get("/books")
 async def get_books(session: SessionDep):

@@ -21,6 +21,7 @@ class Users_no_age(BaseModel):
 class Users(Users_no_age):
     age: int = Field(gt=0, lt=150)
 
+
 @app.get("/users")
 def list_users():
     return users_data
