@@ -1,6 +1,6 @@
 import uvicorn
 from fastapi import FastAPI, HTTPException
-from books_data import data
+from books_data2 import data
 from pydantic import BaseModel
 
 app = FastAPI()
@@ -33,7 +33,7 @@ def add_book(new_book: NewBook):
         "number_of_pages": new_book.number_of_pages,
         "year_published": new_book.year_published
     })
-    return data[-1]
+    return {"unit": data[-1],"comment": "татата"}
 
 
 if __name__ == "__main__":
