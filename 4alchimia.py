@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
@@ -62,5 +62,22 @@ async def get_books(session: SessionDep):
     query = select(Books)
     res = await session.execute(query)
     return res.scalars().all()
+
+
+class Pagination(BaseModel):
+    limit: int = Field(5, ge=0, le=100, description="сколько книг отобразит")
+    offset: int = Field(0, ge=0, description="сколько нужно пропустить")
+
+PaginationDep = Annotated[Pagination, Depends(Pagination)]
+
+@app.get("/books/pagination")
+async def get_books_pagin(session: SessionDep, pagin: PaginationDep):
+    query = select(Books).limit(pagin.limit).offset(pagin.offset)
+    res = await session.execute(query)
+    return res.scalars().all()
+
+
+
+
 
 
