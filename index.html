@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Books App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+        }
+        input {
+            margin: 5px 0;
+            padding: 5px;
+            width: 100%;
+        }
+        button {
+            padding: 6px 10px;
+            margin-top: 10px;
+        }
+        ul {
+            margin-top: 20px;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>📚 Список книг</h1>
+
+<ul id="books-list"></ul>
+
+<h2>➕ Добавить книгу</h2>
+
+<input type="text" id="title" placeholder="Название книги">
+<input type="text" id="author" placeholder="Автор">
+
+<button onclick="addBook()">Добавить</button>
+
+<script>
+    const API_URL = "http://127.0.0.1:8000/books";
+
+    async function loadBooks() {
+        const response = await fetch(API_URL);
+        const books = await response.json();
+
+        const list = document.getElementById("books-list");
+        list.innerHTML = "";
+
+        books.forEach(book => {
+            const li = document.createElement("li");
+            li.textContent = `${book.title} — ${book.author}`;
+            list.appendChild(li);
+        });
+    }
+
+    async function addBook() {
+        const title = document.getElementById("title").value;
+        const author = document.getElementById("author").value;
+
+        if (!title || !author) {
+            alert("Заполни оба поля");
+            return;
+        }
+
+        await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                title: title,
+                author: author
+            })
+        });
+
+        document.getElementById("title").value = "";
+        document.getElementById("author").value = "";
+
+        loadBooks();
+    }
+
+    loadBooks();
+</script>
+
+</body>
+</html>

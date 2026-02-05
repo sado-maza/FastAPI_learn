@@ -2,11 +2,20 @@ from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-
 from fastapi import FastAPI,Depends
 from typing import Annotated
 
+from fastapi.middleware.cors import CORSMiddleware
+
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # для разработки
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 engine = create_async_engine('sqlite+aiosqlite:///books.db')
 
@@ -53,3 +62,5 @@ async def get_books(session: SessionDep):
     query = select(Books)
     res = await session.execute(query)
     return res.scalars().all()
+
+

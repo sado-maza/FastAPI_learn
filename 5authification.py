@@ -1,3 +1,4 @@
+import uvicorn
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
@@ -93,3 +94,8 @@ async def protected(session: SessionDep):
     query = select(UsersModel)
     res = await session.execute(query)
     return res.scalars().all()
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
