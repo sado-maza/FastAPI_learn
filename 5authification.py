@@ -1,9 +1,11 @@
+import time
+from collections.abc import Callable
 import uvicorn
 from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from fastapi import FastAPI, Depends, HTTPException, Response
+from fastapi import FastAPI, Depends, HTTPException, Response, Request
 from typing import Annotated
 from authx import AuthX, AuthXConfig
 
@@ -19,6 +21,16 @@ app = FastAPI()
 engine = create_async_engine('sqlite+aiosqlite:///users.db')
 
 new_session = async_sessionmaker(engine, expire_on_commit=False)
+
+
+# @app.middleware("http")
+# async def middleware(request: Request, call_next: Callable):
+#     response = await call_next(request)
+#     return response
+
+async def email_verify(request: Request):
+    print("тут что то произошло")
+
 
 async def get_session():
     async with new_session() as session:
@@ -70,8 +82,9 @@ async def add_users(data: UsersSchema,session: SessionDep):
     await session.commit()
     return {"message": "User created successfully"}
 
-@app.get("/users")
+@app.get("/users",dependencies=[Depends(email_verify)])
 async def users_list(session: SessionDep):
+    time.sleep(0.5)
     query = select(UsersModel)
     res = await session.execute(query)
     return res.scalars().all()
